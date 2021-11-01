@@ -1,7 +1,9 @@
 package webapp.pickme.petshop.api.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import webapp.pickme.petshop.data.model.product.Filter;
 import webapp.pickme.petshop.data.model.product.Product;
 import webapp.pickme.petshop.service.product.ProductService;
 
@@ -31,5 +33,10 @@ public class ProductController {
     public ResponseEntity<?> delete(@PathVariable Long id){
         this.productService.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<Product>> getFilteredProducts(@RequestBody Filter filter){
+        return new ResponseEntity<>(this.productService.filter(filter), HttpStatus.FOUND );
     }
 }
