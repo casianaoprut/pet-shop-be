@@ -33,3 +33,4 @@ build/
 .vscode/
 
 ### Maven wraper
+/src/main/resources/META-INF/
