@@ -40,4 +40,8 @@ public class ProductService {
                 productQueryFactory.createFilterForProduct( entityManager, filter)
         ).getResultList();
     }
+
+    public Product edit(Product product){
+        return this.productRepository.save(product);
+    }
 }

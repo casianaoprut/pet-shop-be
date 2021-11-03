@@ -39,4 +39,9 @@ public class ProductController {
     public ResponseEntity<List<Product>> getFilteredProducts(@RequestBody Filter filter){
         return new ResponseEntity<>(this.productService.filter(filter), HttpStatus.FOUND );
     }
+
+    @PutMapping("/edit")
+    public ResponseEntity<Product> edit(@RequestBody Product product){
+        return ResponseEntity.ok(this.productService.edit(product));
+    }
 }
