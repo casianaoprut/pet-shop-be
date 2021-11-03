@@ -25,7 +25,7 @@ public class OrderController {
         return ResponseEntity.ok(this.orderService.getAll());
     }
 
-    @GetMapping("/{status}")
+    @GetMapping("/all/{status}")
     public  ResponseEntity<List<Order>> getAllByStatus(@PathVariable("status") Status status){
         return ResponseEntity.ok(this.orderService.getAllByStatus(status));
     }
@@ -35,7 +35,7 @@ public class OrderController {
         return new ResponseEntity<>(this.orderService.add(orderPartViews), HttpStatus.CREATED);
     }
 
-    @PutMapping("/changeStatus/{status}/{id}")
+    @PutMapping("/change-status/{status}/{id}")
     public ResponseEntity<Order> changeStatus(@PathVariable("id") Long id, @PathVariable("status") Status status){
         return ResponseEntity.ok(this.orderService.changeStatus(id, status));
     }
