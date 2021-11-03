@@ -30,7 +30,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
+    public ResponseEntity<?> delete(@PathVariable("id") Long id){
         this.productService.delete(id);
         return ResponseEntity.ok().build();
     }
@@ -38,5 +38,10 @@ public class ProductController {
     @GetMapping("/filter")
     public ResponseEntity<List<Product>> getFilteredProducts(@RequestBody Filter filter){
         return new ResponseEntity<>(this.productService.filter(filter), HttpStatus.FOUND );
+    }
+
+    @PutMapping("/edit")
+    public ResponseEntity<Product> edit(@RequestBody Product product){
+        return ResponseEntity.ok(this.productService.edit(product));
     }
 }
