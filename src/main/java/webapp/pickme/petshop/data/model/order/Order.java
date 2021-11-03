@@ -35,7 +35,7 @@ public class Order {
     @Column(nullable = false)
     private Status status;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "orderId")
     private List<OrderPart> orderParts;
 
 }
