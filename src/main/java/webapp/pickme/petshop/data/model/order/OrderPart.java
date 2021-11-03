@@ -25,8 +25,6 @@ public class OrderPart {
 
     private Integer quantity;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
+    private Long orderId;
 
 }
