@@ -36,6 +36,6 @@ public class Order {
     private Status status;
 
     @OneToMany(mappedBy = "order")
-    private List<OrderEntity> products;
+    private List<OrderPart> orderParts;
 
 }

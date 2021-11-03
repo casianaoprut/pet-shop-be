@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class OrderEntity {
+public class OrderPart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -44,4 +44,9 @@ public class OrderController {
         this.orderService.delete(id);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/accept/{id}")
+    public ResponseEntity<Order> accept(@PathVariable("id") Long id){
+        return ResponseEntity.ok(this.orderService.acceptOrder(id));
+    }
 }
