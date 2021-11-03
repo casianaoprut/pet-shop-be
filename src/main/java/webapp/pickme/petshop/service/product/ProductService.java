@@ -23,6 +23,11 @@ public class ProductService {
         this.entityManager = entityManager;
     }
 
+    public Product find(Long id){
+        return this.productRepository.findById(id)
+                                     .orElseThrow(() -> new IllegalStateException("product with id " + id + " does not exists!"));
+    }
+
     public List<Product> getAll(){
         return productRepository.findAll();
     }

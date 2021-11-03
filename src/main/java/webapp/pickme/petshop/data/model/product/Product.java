@@ -13,7 +13,7 @@ public class Product {
 
     @Id
     @SequenceGenerator(
-        name = "product-sequence",
+        name = "product_sequence",
         sequenceName = "product_sequence",
         allocationSize = 1
     )
@@ -27,7 +27,7 @@ public class Product {
     private String name;
 
     @Column(nullable = false)
-    private Integer price;
+    private Float price;
 
     @Column(nullable = false)
     private String description;
