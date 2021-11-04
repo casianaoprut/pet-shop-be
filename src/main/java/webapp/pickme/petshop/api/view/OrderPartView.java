@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import webapp.pickme.petshop.data.model.order.OrderPart;
 
 @Getter
 @Setter
@@ -14,5 +15,10 @@ public class OrderPartView {
     private Long productId;
 
     private Integer quantity;
+
+    public OrderPartView(OrderPart orderPart){
+        this.productId = orderPart.getProduct().getId();
+        this.quantity = orderPart.getQuantity();
+    }
 
 }
