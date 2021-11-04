@@ -9,6 +9,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import webapp.pickme.petshop.data.model.user.Role;
@@ -22,6 +25,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String ADMIN = Role.ADMIN.name();
 
     private static final String USER = Role.USER.name();
+
+    private static final String[] CSRF_IGNORE = {"/signIn/**", "/signUp/**"};
 
     private final DataSource dataSource;
 
@@ -43,9 +48,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         authorizationConfig(http);
         corsConfig(http);
+        csrfConfig(http);
     }
 
-    private static void authorizationConfig(HttpSecurity http) throws Exception {
+    private void authorizationConfig(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/product/all").hasAnyRole(ADMIN, USER)
                 .antMatchers("/product/filter").hasAnyRole(ADMIN, USER)
@@ -61,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic();
     }
 
-    private static void corsConfig(HttpSecurity http) throws Exception {
+    private void corsConfig(HttpSecurity http) throws Exception {
         http.cors(c -> {
             CorsConfigurationSource cs = r -> {
                 var cc = new CorsConfiguration();
@@ -74,5 +80,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             };
             c.configurationSource(cs);
         });
+    }
+
+    private void csrfConfig(HttpSecurity http) throws Exception {
+        http.csrf()
+            .ignoringAntMatchers(CSRF_IGNORE)
+            .csrfTokenRepository(csrfTokenRepository())
+            .and()
+            .addFilterAfter(new CustomCsrfFilter(), CsrfFilter.class);
+    }
+
+    private CsrfTokenRepository csrfTokenRepository() {
+        var repository = new HttpSessionCsrfTokenRepository();
+        repository.setHeaderName(CustomCsrfFilter.CSRF_COOKIE_NAME);
+        return repository;
     }
 }
