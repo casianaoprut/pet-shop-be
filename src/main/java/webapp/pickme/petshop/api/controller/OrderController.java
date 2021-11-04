@@ -3,9 +3,7 @@ package webapp.pickme.petshop.api.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import webapp.pickme.petshop.api.view.OrderPartView;
 import webapp.pickme.petshop.api.view.OrderView;
-import webapp.pickme.petshop.data.model.order.Order;
 import webapp.pickme.petshop.data.model.order.Status;
 import webapp.pickme.petshop.service.order.OrderService;
 

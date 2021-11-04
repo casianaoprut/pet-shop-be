@@ -1,9 +1,11 @@
-package webapp.pickme.petshop.data.model.product;
+package webapp.pickme.petshop.api.view;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import webapp.pickme.petshop.data.model.product.Breed;
+import webapp.pickme.petshop.data.model.product.Category;
 
 
 @Getter

@@ -3,8 +3,8 @@ package webapp.pickme.petshop.api.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import webapp.pickme.petshop.data.model.product.Filter;
-import webapp.pickme.petshop.data.model.product.Product;
+import webapp.pickme.petshop.api.view.Filter;
+import webapp.pickme.petshop.api.view.ProductView;
 import webapp.pickme.petshop.service.product.ProductService;
 
 import java.util.List;
@@ -20,12 +20,12 @@ public class ProductController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Product>> getAll() {
+    public ResponseEntity<List<ProductView>> getAll() {
         return ResponseEntity.ok(this.productService.getAll());
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Product> add(@RequestBody Product product){
+    public ResponseEntity<ProductView> add(@RequestBody ProductView product){
         return  ResponseEntity.ok(this.productService.add(product));
     }
 
@@ -36,12 +36,12 @@ public class ProductController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<Product>> getFilteredProducts(@RequestBody Filter filter){
+    public ResponseEntity<List<ProductView>> getFilteredProducts(@RequestBody Filter filter){
         return new ResponseEntity<>(this.productService.filter(filter), HttpStatus.FOUND );
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<Product> edit(@RequestBody Product product){
-        return ResponseEntity.ok(this.productService.edit(product));
+    public ResponseEntity<ProductView> edit(@RequestBody ProductView productView){
+        return ResponseEntity.ok(this.productService.edit(productView));
     }
 }

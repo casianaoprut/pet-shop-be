@@ -1,6 +1,7 @@
 package webapp.pickme.petshop.data.model.product;
 
 import lombok.*;
+import webapp.pickme.petshop.api.view.ProductView;
 
 import javax.persistence.*;
 
@@ -21,7 +22,7 @@ public class Product {
             strategy = GenerationType.SEQUENCE,
             generator = "product_sequence"
     )
-    private Long Id;
+    private Long id;
 
     @Column(nullable = false)
     private String name;
@@ -41,4 +42,13 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
 
+    public Product(ProductView productView){
+        this.id = productView.getId();
+        this.name = productView.getName();
+        this.price = productView.getPrice();
+        this.description = productView.getDescription();
+        this.forBreed = productView.getForBreed();
+        this.category = productView.getCategory();
+        this.stock = productView.getStock();
+    }
 }

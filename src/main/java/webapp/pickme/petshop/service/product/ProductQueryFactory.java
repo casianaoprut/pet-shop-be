@@ -2,7 +2,7 @@ package webapp.pickme.petshop.service.product;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import webapp.pickme.petshop.data.model.product.Filter;
+import webapp.pickme.petshop.api.view.Filter;
 import webapp.pickme.petshop.data.model.product.Product;
 
 import javax.persistence.EntityManager;
