@@ -64,6 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/order/delete/**").hasRole(ADMIN)
                 .antMatchers("/order/accept/**").hasRole(ADMIN)
                 .and()
+                .logout().permitAll()
+                .and()
                 .httpBasic();
     }
 
@@ -95,4 +97,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         repository.setHeaderName(CustomCsrfFilter.CSRF_COOKIE_NAME);
         return repository;
     }
+
 }
