@@ -26,7 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String USER = Role.USER.name();
 
-    private static final String[] CSRF_IGNORE = {"/signIn/**", "/signUp/**"};
+    private static final String[] CSRF_IGNORE = {"/user/login", "user/create"};
 
     private final DataSource dataSource;
 
@@ -53,16 +53,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void authorizationConfig(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/product/all").hasAnyRole(ADMIN, USER)
-                .antMatchers("/product/filter").hasAnyRole(ADMIN, USER)
-                .antMatchers("/product/delete/**").hasRole(ADMIN)
-                .antMatchers("/product/edit/**").hasRole(ADMIN)
-                .antMatchers("/product/add").hasRole(ADMIN)
-                .antMatchers("/order/add").hasAnyRole(ADMIN, USER)
-                .antMatchers("/order/all/**").hasRole(ADMIN)
-                .antMatchers("/order/change-status/**").hasRole(ADMIN)
-                .antMatchers("/order/delete/**").hasRole(ADMIN)
-                .antMatchers("/order/accept/**").hasRole(ADMIN)
+                .antMatchers("/product/all").permitAll()
+                .antMatchers("/product/filter").permitAll()
+                .antMatchers("/product/delete/*").hasAuthority(ADMIN)
+                .antMatchers("/product/edit/*").hasAuthority(ADMIN)
+                .antMatchers("/product/add").hasAuthority(ADMIN)
+                .antMatchers("/order/add").hasAnyAuthority(ADMIN, USER)
+                .antMatchers("/order/all/*").hasAuthority(ADMIN)
+                .antMatchers("/order/change-status/*").hasAuthority(ADMIN)
+                .antMatchers("/order/delete/*").hasAuthority(ADMIN)
+                .antMatchers("/order/accept/*").hasAuthority(ADMIN)
+                .antMatchers("/user/*").permitAll()
                 .and()
                 .logout().permitAll()
                 .and()
@@ -85,11 +86,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private void csrfConfig(HttpSecurity http) throws Exception {
-        http.csrf()
-            .ignoringAntMatchers(CSRF_IGNORE)
-            .csrfTokenRepository(csrfTokenRepository())
-            .and()
-            .addFilterAfter(new CustomCsrfFilter(), CsrfFilter.class);
+        http.csrf().disable();
+//        http.csrf()
+//            .ignoringAntMatchers(CSRF_IGNORE)
+//            .csrfTokenRepository(csrfTokenRepository())
+//            .and()
+//            .addFilterAfter(new CustomCsrfFilter(), CsrfFilter.class);
     }
 
     private CsrfTokenRepository csrfTokenRepository() {
