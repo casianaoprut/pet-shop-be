@@ -1,5 +1,7 @@
 package webapp.pickme.petshop.service.order;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import webapp.pickme.petshop.api.view.OrderPartView;
 import webapp.pickme.petshop.api.view.OrderView;
@@ -29,13 +31,25 @@ public class OrderService {
     }
 
     public OrderView add(OrderView orderView){
-        var order = new Order();
-        order.setDate(LocalDate.now());
-        order.setStatus(Status.Pending);
-        order.setUsername(orderView.getUsername());
-        this.orderRepository.save(order);
-        order.setOrderParts(mapOrderPartView(orderView.getOrderPartViews(), order));
-        return new OrderView(this.orderRepository.save(order));
+        if(orderView.getOrderPartViews() != null) {
+            var order = new Order();
+            order.setDate(LocalDate.now());
+            order.setStatus(Status.Pending);
+            order.setUserName(getAuthenticatedUser());
+            this.orderRepository.save(order);
+            order.setOrderParts(mapOrderPartView(orderView.getOrderPartViews(), order));
+            return new OrderView(this.orderRepository.save(order));
+        }
+        throw new IllegalArgumentException("An order can not be empty!");
+    }
+
+    private String getAuthenticatedUser(){
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(principal instanceof UserDetails){
+            return ((UserDetails) principal).getUsername();
+        }
+        return principal.toString();
     }
 
     private List<OrderPart> mapOrderPartView(List<OrderPartView> orderPartViews, Order order){
@@ -81,9 +95,11 @@ public class OrderService {
     public OrderView changeStatus(Long id, Status status){
         var order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("Order with id " + id + " does not exists!"));
-        if (order.getStatus().equals(Status.Pending)){
+        if(order.getStatus().equals(Status.Pending)){
             acceptOrder(order.getId());
         }
+        if(status.equals(Status.Pending))
+            throw new IllegalStateException("You can't change an order status to pending!");
         order.setStatus(status);
         return new OrderView(this.orderRepository.save(order));
     }

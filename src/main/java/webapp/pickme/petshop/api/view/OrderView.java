@@ -31,7 +31,7 @@ public class OrderView {
         this.id = order.getId();
         this.date = order.getDate();
         this.status = order.getStatus();
-        this.username = order.getUsername();
+        this.username = order.getUserName();
         this.orderPartViews = order.getOrderParts()
                                    .stream()
                                    .map(OrderPartView::new)

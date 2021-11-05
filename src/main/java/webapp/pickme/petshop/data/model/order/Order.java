@@ -36,7 +36,7 @@ public class Order {
     private Status status;
 
     @Column(nullable = false )
-    private String username;
+    private String userName;
 
     @OneToMany(mappedBy = "orderId")
     private List<OrderPart> orderParts;
