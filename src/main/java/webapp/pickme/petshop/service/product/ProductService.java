@@ -1,12 +1,14 @@
 package webapp.pickme.petshop.service.product;
 
 import org.springframework.stereotype.Service;
-import webapp.pickme.petshop.data.model.product.Filter;
+import webapp.pickme.petshop.api.view.Filter;
+import webapp.pickme.petshop.api.view.ProductView;
 import webapp.pickme.petshop.data.model.product.Product;
 import webapp.pickme.petshop.data.repository.ProductRepository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -28,25 +30,37 @@ public class ProductService {
                                      .orElseThrow(() -> new IllegalStateException("product with id " + id + " does not exists!"));
     }
 
-    public List<Product> getAll(){
-        return productRepository.findAll();
+    public List<ProductView> getAll(){
+        return productRepository.findAll()
+                                .stream()
+                                .map(ProductView::new)
+                                .collect(Collectors.toList());
     }
 
-    public Product add(Product product){
-        return productRepository.save(product);
+    public ProductView add(ProductView productView){
+        var product = new Product(productView);
+        return new ProductView(productRepository.save(product));
     }
 
     public void delete(Long id){
         productRepository.deleteById(id);
     }
 
-    public List<Product> filter(Filter filter){
+    public List<ProductView> filter(Filter filter){
         return entityManager.createQuery(
                 productQueryFactory.createFilterForProduct( entityManager, filter)
-        ).getResultList();
+        ).getResultList()
+         .stream()
+         .map(ProductView::new)
+         .collect(Collectors.toList());
     }
 
-    public Product edit(Product product){
-        return this.productRepository.save(product);
+    public ProductView edit(ProductView productView){
+        var product = new Product(productView);
+        return new ProductView(this.productRepository.save(product));
+    }
+
+    public void edit(Product product){
+        this.productRepository.save(product);
     }
 }

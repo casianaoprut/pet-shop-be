@@ -1,7 +1,10 @@
 package webapp.pickme.petshop.service.order;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import webapp.pickme.petshop.api.view.OrderPartView;
+import webapp.pickme.petshop.api.view.OrderView;
 import webapp.pickme.petshop.data.model.order.Order;
 import webapp.pickme.petshop.data.model.order.OrderPart;
 import webapp.pickme.petshop.data.model.order.Status;
@@ -27,13 +30,26 @@ public class OrderService {
         this.orderPartService = orderPartService;
     }
 
-    public Order add(List<OrderPartView> orderPartViews){
-        var order = new Order();
-        order.setDate(LocalDate.now());
-        order.setStatus(Status.Pending);
-        this.orderRepository.save(order);
-        order.setOrderParts(mapOrderPartView(orderPartViews, order));
-        return this.orderRepository.save(order);
+    public OrderView add(OrderView orderView){
+        if(orderView.getOrderPartViews() != null) {
+            var order = new Order();
+            order.setDate(LocalDate.now());
+            order.setStatus(Status.Pending);
+            order.setUserName(getAuthenticatedUser());
+            this.orderRepository.save(order);
+            order.setOrderParts(mapOrderPartView(orderView.getOrderPartViews(), order));
+            return new OrderView(this.orderRepository.save(order));
+        }
+        throw new IllegalArgumentException("An order can not be empty!");
+    }
+
+    private String getAuthenticatedUser(){
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(principal instanceof UserDetails){
+            return ((UserDetails) principal).getUsername();
+        }
+        return principal.toString();
     }
 
     private List<OrderPart> mapOrderPartView(List<OrderPartView> orderPartViews, Order order){
@@ -48,36 +64,44 @@ public class OrderService {
                 }).collect(Collectors.toList());
     }
 
-    public List<Order> getAll(){
-        return this.orderRepository.findAll();
+    public List<OrderView> getAll(){
+        return this.orderRepository.findAll()
+                                   .stream()
+                                   .map(OrderView::new)
+                                   .collect(Collectors.toList());
     }
 
-    public List<Order> getAllByStatus(Status status){
-        return this.orderRepository.findAllByStatus(status);
+    public List<OrderView> getAllByStatus(Status status){
+        return this.orderRepository.findAllByStatus(status)
+                                   .stream()
+                                   .map(OrderView::new)
+                                   .collect(Collectors.toList());
     }
 
     public void delete(Long id){
         this.orderRepository.deleteById(id);
     }
 
-    public Order acceptOrder(Long id){
+    public OrderView acceptOrder(Long id){
         var order = orderRepository.findById(id)
                                           .orElseThrow(() ->
                                                   new IllegalStateException("Order with id " + id + " does not exists!"));
         order.setStatus(Status.Accepted);
         orderRepository.save(order);
         changeProductsStock(order.getOrderParts());
-        return order;
+        return new OrderView(order);
     }
 
-    public Order changeStatus(Long id, Status status){
+    public OrderView changeStatus(Long id, Status status){
         var order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("Order with id " + id + " does not exists!"));
-        if (order.getStatus() == Status.Pending){
+        if(order.getStatus().equals(Status.Pending)){
             acceptOrder(order.getId());
         }
+        if(status.equals(Status.Pending))
+            throw new IllegalStateException("You can't change an order status to pending!");
         order.setStatus(status);
-        return orderRepository.save(order);
+        return new OrderView(this.orderRepository.save(order));
     }
 
     private void changeProductsStock(List<OrderPart> orderParts){

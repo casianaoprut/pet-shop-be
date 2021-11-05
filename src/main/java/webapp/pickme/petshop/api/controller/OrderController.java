@@ -3,8 +3,7 @@ package webapp.pickme.petshop.api.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import webapp.pickme.petshop.api.view.OrderPartView;
-import webapp.pickme.petshop.data.model.order.Order;
+import webapp.pickme.petshop.api.view.OrderView;
 import webapp.pickme.petshop.data.model.order.Status;
 import webapp.pickme.petshop.service.order.OrderService;
 
@@ -21,22 +20,22 @@ public class OrderController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Order>> getAll(){
+    public ResponseEntity<List<OrderView>> getAll(){
         return ResponseEntity.ok(this.orderService.getAll());
     }
 
     @GetMapping("/all/{status}")
-    public  ResponseEntity<List<Order>> getAllByStatus(@PathVariable("status") Status status){
+    public  ResponseEntity<List<OrderView>> getAllByStatus(@PathVariable("status") Status status){
         return ResponseEntity.ok(this.orderService.getAllByStatus(status));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Order> add(@RequestBody List<OrderPartView> orderPartViews){
-        return new ResponseEntity<>(this.orderService.add(orderPartViews), HttpStatus.CREATED);
+    public ResponseEntity<OrderView> add(@RequestBody OrderView orderView){
+        return new ResponseEntity<>(this.orderService.add(orderView), HttpStatus.CREATED);
     }
 
     @PutMapping("/change-status/{status}/{id}")
-    public ResponseEntity<Order> changeStatus(@PathVariable("id") Long id, @PathVariable("status") Status status){
+    public ResponseEntity<OrderView> changeStatus(@PathVariable("id") Long id, @PathVariable("status") Status status){
         return ResponseEntity.ok(this.orderService.changeStatus(id, status));
     }
 
@@ -47,7 +46,7 @@ public class OrderController {
     }
 
     @PutMapping("/accept/{id}")
-    public ResponseEntity<Order> accept(@PathVariable("id") Long id){
+    public ResponseEntity<OrderView> accept(@PathVariable("id") Long id){
         return ResponseEntity.ok(this.orderService.acceptOrder(id));
     }
 }

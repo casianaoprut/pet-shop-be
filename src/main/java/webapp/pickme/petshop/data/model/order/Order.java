@@ -27,13 +27,16 @@ public class Order {
             strategy = GenerationType.SEQUENCE,
             generator = "order_sequence"
     )
-    private Long Id;
+    private Long id;
 
     @Column(nullable = false)
     private LocalDate date;
 
     @Column(nullable = false)
     private Status status;
+
+    @Column(nullable = false )
+    private String userName;
 
     @OneToMany(mappedBy = "orderId")
     private List<OrderPart> orderParts;
