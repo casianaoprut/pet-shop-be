@@ -42,6 +42,11 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] photo;
+
+
     public Product(ProductView productView){
         this.id = productView.getId();
         this.name = productView.getName();
@@ -50,5 +55,6 @@ public class Product {
         this.forBreed = productView.getForBreed();
         this.category = productView.getCategory();
         this.stock = productView.getStock();
+        this.photo = productView.getPhoto();
     }
 }

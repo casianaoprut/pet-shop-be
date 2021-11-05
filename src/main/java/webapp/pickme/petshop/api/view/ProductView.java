@@ -28,6 +28,9 @@ public class ProductView {
 
     private Integer stock;
 
+    private byte[] photo;
+
+
     public ProductView(Product product){
         this.id = product.getId();
         this.name = product.getName();
@@ -36,6 +39,7 @@ public class ProductView {
         this.forBreed = product.getForBreed();
         this.category = product.getCategory();
         this.stock = product.getStock();
+        this.photo = product.getPhoto();
     }
 
 }
