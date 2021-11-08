@@ -2,6 +2,7 @@ package webapp.pickme.petshop.service.user;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,7 +15,7 @@ import webapp.pickme.petshop.data.model.user.Role;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -28,19 +29,19 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserView create(MyUser myUser) {
+    public UserView create(MyUser myUser) throws UserException {
         if(!checkIfUsernameAlreadyExists(myUser.getUserName())) {
             var encodedPassword = passwordEncoder.encode(myUser.getPassword());
             var user = new User(myUser.getUserName(), encodedPassword, getAuthorities(myUser.getRole()));
             jdbcUserDetailsManager.createUser(user);
             return new UserView(user.getUsername(), getRole(user));
         }
-        throw new IllegalArgumentException("Username already exists!");
+        throw new UserException("Username already exists!");
     }
 
     private List<GrantedAuthority> getAuthorities(Role role){
         List<GrantedAuthority> authorities = new ArrayList<>(List.of());
-        authorities.add(new SimpleGrantedAuthority(Objects.requireNonNullElse(role, Role.USER).name()));
+        authorities.add(new SimpleGrantedAuthority(Optional.ofNullable(role).orElse(Role.USER).name()));
         return authorities;
     }
 
@@ -50,17 +51,10 @@ public class UserService {
                     .map(elem -> Role.valueOf(elem.toString())).findFirst().orElse(null);
     }
 
-    public UserView login(MyUser myUser) throws IllegalAccessException {
-        if(checkCredentials(myUser)){
-            return new UserView(myUser.getUserName(), myUser.getRole());
-        }
-        throw new IllegalAccessException("Incorrect credentials!");
-    }
-
-    private boolean checkCredentials(MyUser myUser) {
-        var user = jdbcUserDetailsManager.loadUserByUsername(myUser.getUserName());
-        var encodedPassword = passwordEncoder.encode(myUser.getPassword());
-        return user.getPassword().equals(encodedPassword);
+    public UserView login(){
+        var username = getAuthenticatedUserName();
+        var role = getRole(jdbcUserDetailsManager.loadUserByUsername(username));
+        return new UserView(username, role);
     }
 
     private boolean checkIfUsernameAlreadyExists(String username){
@@ -70,5 +64,14 @@ public class UserService {
             return false;
         }
         return true;
+    }
+
+    public String getAuthenticatedUserName(){
+        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(principal instanceof UserDetails){
+            return ((UserDetails) principal).getUsername();
+        }
+        return principal.toString();
     }
 }

@@ -1,7 +1,5 @@
 package webapp.pickme.petshop.service.order;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import webapp.pickme.petshop.api.view.OrderPartView;
 import webapp.pickme.petshop.api.view.OrderView;
@@ -10,6 +8,7 @@ import webapp.pickme.petshop.data.model.order.OrderPart;
 import webapp.pickme.petshop.data.model.order.Status;
 import webapp.pickme.petshop.data.repository.OrderRepository;
 import webapp.pickme.petshop.service.product.ProductService;
+import webapp.pickme.petshop.service.user.UserService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,10 +23,13 @@ public class OrderService {
 
     private final OrderPartService orderPartService;
 
-    public OrderService(OrderRepository orderRepository, ProductService productService, OrderPartService orderPartService) {
+    private final UserService userService;
+
+    public OrderService(OrderRepository orderRepository, ProductService productService, OrderPartService orderPartService, UserService userService) {
         this.orderRepository = orderRepository;
         this.productService = productService;
         this.orderPartService = orderPartService;
+        this.userService = userService;
     }
 
     public OrderView add(OrderView orderView){
@@ -35,7 +37,7 @@ public class OrderService {
             var order = new Order();
             order.setDate(LocalDate.now());
             order.setStatus(Status.Pending);
-            order.setUserName(getAuthenticatedUser());
+            order.setUserName(userService.getAuthenticatedUserName());
             this.orderRepository.save(order);
             order.setOrderParts(mapOrderPartView(orderView.getOrderPartViews(), order));
             return new OrderView(this.orderRepository.save(order));
@@ -43,14 +45,6 @@ public class OrderService {
         throw new IllegalArgumentException("An order can not be empty!");
     }
 
-    private String getAuthenticatedUser(){
-        var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if(principal instanceof UserDetails){
-            return ((UserDetails) principal).getUsername();
-        }
-        return principal.toString();
-    }
 
     private List<OrderPart> mapOrderPartView(List<OrderPartView> orderPartViews, Order order){
         return orderPartViews.stream()
