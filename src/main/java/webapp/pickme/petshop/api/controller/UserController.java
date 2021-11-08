@@ -1,6 +1,5 @@
 package webapp.pickme.petshop.api.controller;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +18,19 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody MyUser myUser){
-        this.userService.create(myUser);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        try {
+            return new ResponseEntity<>(this.userService.create(myUser),HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody MyUser myUser){
-        if (this.userService.login(myUser))
-            return ResponseEntity.ok().build();
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        try {
+            return ResponseEntity.ok(this.userService.login(myUser));
+        } catch (IllegalAccessException e){
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.UNAUTHORIZED);
+        }
     }
 }
