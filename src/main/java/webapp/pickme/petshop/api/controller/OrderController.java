@@ -50,7 +50,7 @@ public class OrderController {
         return ResponseEntity.ok(this.orderService.acceptOrder(id));
     }
 
-    @GetMapping("/my-orders")
+    @GetMapping("/user-orders")
     public ResponseEntity<List<OrderView>> getUserOrders(){
         return new ResponseEntity<>(this.orderService.getUserOrders(), HttpStatus.FOUND);
     }
