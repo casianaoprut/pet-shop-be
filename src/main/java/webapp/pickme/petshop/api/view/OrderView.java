@@ -27,6 +27,8 @@ public class OrderView {
 
     private List<OrderPartView> orderPartViews;
 
+    private Float price;
+
     public OrderView(Order order){
         this.id = order.getId();
         this.date = order.getDate();
@@ -36,16 +38,10 @@ public class OrderView {
                                    .stream()
                                    .map(OrderPartView::new)
                                    .collect(Collectors.toList());
+        this.price = order.getOrderParts()
+                          .stream()
+                          .map(elem -> elem.getProduct().getPrice() * elem.getQuantity())
+                          .reduce(0.0F, Float::sum);
     }
 
-    @Override
-    public String toString() {
-        return "OrderView{" +
-                "id=" + id +
-                ", date=" + date +
-                ", status=" + status +
-                ", username='" + username + '\'' +
-                ", orderPartViews=" + orderPartViews +
-                '}';
-    }
 }
