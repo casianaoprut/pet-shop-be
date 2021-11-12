@@ -52,6 +52,6 @@ public class OrderController {
 
     @GetMapping("/user-orders")
     public ResponseEntity<List<OrderView>> getUserOrders(){
-        return new ResponseEntity<>(this.orderService.getUserOrders(), HttpStatus.FOUND);
+        return ResponseEntity.ok(this.orderService.getUserOrders());
     }
 }
