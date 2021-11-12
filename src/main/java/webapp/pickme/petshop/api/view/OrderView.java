@@ -38,4 +38,14 @@ public class OrderView {
                                    .collect(Collectors.toList());
     }
 
+    @Override
+    public String toString() {
+        return "OrderView{" +
+                "id=" + id +
+                ", date=" + date +
+                ", status=" + status +
+                ", username='" + username + '\'' +
+                ", orderPartViews=" + orderPartViews +
+                '}';
+    }
 }

@@ -39,14 +39,14 @@ public class OrderService {
             order.setStatus(Status.Pending);
             order.setUserName(userService.getAuthenticatedUserName());
             this.orderRepository.save(order);
-            order.setOrderParts(mapOrderPartView(orderView.getOrderPartViews(), order));
+            order.setOrderParts(mapOrderPartViewToOrderPart(orderView.getOrderPartViews(), order));
             return new OrderView(this.orderRepository.save(order));
         }
         throw new IllegalArgumentException("An order can not be empty!");
     }
 
 
-    private List<OrderPart> mapOrderPartView(List<OrderPartView> orderPartViews, Order order){
+    private List<OrderPart> mapOrderPartViewToOrderPart(List<OrderPartView> orderPartViews, Order order){
         return orderPartViews.stream()
                 .map(orderPartView -> {
                     var orderPart = new OrderPart();
@@ -66,10 +66,14 @@ public class OrderService {
     }
 
     public List<OrderView> getAllByStatus(Status status){
-        return this.orderRepository.findAllByStatus(status)
-                                   .stream()
-                                   .map(OrderView::new)
-                                   .collect(Collectors.toList());
+        return mapOrderToOrderView(this.orderRepository.findAllByStatus(status));
+    }
+
+    private List<OrderView> mapOrderToOrderView(List<Order> orderList){
+        return orderList
+                .stream()
+                .map(OrderView::new)
+                .collect(Collectors.toList());
     }
 
     public void delete(Long id){
@@ -104,5 +108,10 @@ public class OrderService {
             product.setStock(product.getStock() - orderPart.getQuantity());
             this.productService.edit(product);
         });
+    }
+
+    public List<OrderView> getUserOrders(){
+        var username = this.userService.getAuthenticatedUserName();
+        return mapOrderToOrderView(this.orderRepository.findAllByUserName(username));
     }
 }

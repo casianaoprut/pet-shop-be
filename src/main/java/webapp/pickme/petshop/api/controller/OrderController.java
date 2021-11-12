@@ -49,4 +49,9 @@ public class OrderController {
     public ResponseEntity<OrderView> accept(@PathVariable("id") Long id){
         return ResponseEntity.ok(this.orderService.acceptOrder(id));
     }
+
+    @GetMapping("/my-orders")
+    public ResponseEntity<List<OrderView>> getUserOrders(){
+        return new ResponseEntity<>(this.orderService.getUserOrders(), HttpStatus.FOUND);
+    }
 }

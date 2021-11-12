@@ -53,7 +53,7 @@ public class UserService {
     private boolean createAdminAccountCondition(MyUser myUser) throws UserException {
         return myUser.getRole() != null &&
                myUser.getRole().equals(ADMIN) &&
-               !getRoleFromAuthorities(getAuthenticatedUser()).equals(ADMIN);
+               !getRoleFromAuthorities(getAuthenticatedAdmin()).equals(ADMIN);
     }
 
     private List<GrantedAuthority> getAuthorities(Role role){
@@ -84,7 +84,7 @@ public class UserService {
         return principal.toString();
     }
 
-    public UserDetails getAuthenticatedUser() throws UserException {
+    public UserDetails getAuthenticatedAdmin() throws UserException {
         var username = getAuthenticatedUserName();
         if(username.equals("anonymousUser")){
             throw new UserException("Admin not authenticated!");
