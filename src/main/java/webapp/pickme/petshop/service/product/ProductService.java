@@ -1,5 +1,6 @@
 package webapp.pickme.petshop.service.product;
 
+import com.github.fge.lambdas.functions.ThrowingFunction;
 import org.springframework.stereotype.Service;
 import webapp.pickme.petshop.api.view.Filter;
 import webapp.pickme.petshop.api.view.ProductView;
@@ -64,8 +65,14 @@ public class ProductService {
         this.productRepository.save(product);
     }
 
-    public ProductView getById(Long id) throws ProductException {
+    public ProductView getById(Long id){
         return new ProductView(this.productRepository.findById(id).orElseThrow(() ->
-                new ProductException("The product with this id does not exist!")));
+                new ProductException("Incorrect id!")));
+    }
+
+    public List<ProductView> getProductListByIdList(List<Long> idList){
+        return idList.stream()
+                .map(this::getById)
+                .collect(Collectors.toList());
     }
 }

@@ -54,4 +54,13 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/get-by-id-list")
+    public ResponseEntity<?> getProductListByIdList(@RequestParam("idList") List<Long> idList ){
+        try {
+            return ResponseEntity.ok(this.productService.getProductListByIdList(idList));
+        }catch (ProductException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

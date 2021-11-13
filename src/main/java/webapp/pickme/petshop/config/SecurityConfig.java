@@ -56,6 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/product/filter").permitAll()
                 .antMatchers("/user/create").permitAll()
                 .antMatchers("/user/login").authenticated()
+                .antMatchers("/product/get-by-id-list").hasAuthority(ADMIN)
                 .antMatchers("/product/delete/*").hasAuthority(ADMIN)
                 .antMatchers("/product/edit/*").hasAuthority(ADMIN)
                 .antMatchers("/product/add").hasAuthority(ADMIN)
