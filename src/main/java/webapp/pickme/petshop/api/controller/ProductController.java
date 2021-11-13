@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import webapp.pickme.petshop.api.view.Filter;
 import webapp.pickme.petshop.api.view.ProductView;
+import webapp.pickme.petshop.service.product.ProductException;
 import webapp.pickme.petshop.service.product.ProductService;
 
 import java.util.List;
@@ -43,5 +44,14 @@ public class ProductController {
     @PutMapping("/edit")
     public ResponseEntity<ProductView> edit(@RequestBody ProductView productView){
         return ResponseEntity.ok(this.productService.edit(productView));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable("id") Long id){
+        try {
+            return ResponseEntity.ok(this.productService.getById(id));
+        } catch (ProductException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

@@ -63,4 +63,9 @@ public class ProductService {
     public void edit(Product product){
         this.productRepository.save(product);
     }
+
+    public ProductView getById(Long id) throws ProductException {
+        return new ProductView(this.productRepository.findById(id).orElseThrow(() ->
+                new ProductException("The product with this id does not exist!")));
+    }
 }
