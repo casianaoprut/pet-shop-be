@@ -33,13 +33,13 @@ public class OrderService {
     }
 
     public OrderView add(OrderView orderView){
-        if(orderView.getOrderPartViews() != null) {
+        if(orderView.getOrderPartList() != null) {
             var order = new Order();
             order.setDate(LocalDate.now());
             order.setStatus(Status.Pending);
             order.setUserName(userService.getAuthenticatedUserName());
             this.orderRepository.save(order);
-            order.setOrderParts(mapOrderPartViewToOrderPart(orderView.getOrderPartViews(), order));
+            order.setOrderParts(mapOrderPartViewToOrderPart(orderView.getOrderPartList(), order));
             return new OrderView(this.orderRepository.save(order));
         }
         throw new IllegalArgumentException("An order can not be empty!");
@@ -113,5 +113,10 @@ public class OrderService {
     public List<OrderView> getUserOrders(){
         var username = this.userService.getAuthenticatedUserName();
         return mapOrderToOrderView(this.orderRepository.findAllByUserName(username));
+    }
+
+    public OrderView getById(Long id){
+        return new OrderView(this.orderRepository.findById(id).orElseThrow(() ->
+                new OrderException("This order does not exist!")));
     }
 }

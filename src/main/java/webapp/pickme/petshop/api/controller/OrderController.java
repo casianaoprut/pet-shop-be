@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import webapp.pickme.petshop.api.view.OrderView;
 import webapp.pickme.petshop.data.model.order.Status;
+import webapp.pickme.petshop.service.order.OrderException;
 import webapp.pickme.petshop.service.order.OrderService;
 
 import java.util.List;
@@ -53,6 +54,15 @@ public class OrderController {
     @GetMapping("/user-orders")
     public ResponseEntity<List<OrderView>> getUserOrders(){
         return ResponseEntity.ok(this.orderService.getUserOrders());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable("id") Long id){
+        try {
+            return ResponseEntity.ok(this.orderService.getById(id));
+        } catch (OrderException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 }

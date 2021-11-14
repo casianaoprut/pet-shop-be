@@ -25,7 +25,7 @@ public class OrderView {
 
     private String username;
 
-    private List<OrderPartView> orderPartViews;
+    private List<OrderPartView> orderPartList;
 
     private Float price;
 
@@ -34,7 +34,7 @@ public class OrderView {
         this.date = order.getDate();
         this.status = order.getStatus();
         this.username = order.getUserName();
-        this.orderPartViews = order.getOrderParts()
+        this.orderPartList = order.getOrderParts()
                                    .stream()
                                    .map(OrderPartView::new)
                                    .collect(Collectors.toList());
