@@ -4,5 +4,6 @@ public enum Category {
     Food,
     Accessories,
     Shampoo,
-    Furniture
+    Furniture,
+    Toys
 }

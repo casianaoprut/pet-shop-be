@@ -4,9 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 import webapp.pickme.petshop.data.model.product.Breed;
 import webapp.pickme.petshop.data.model.product.Category;
 import webapp.pickme.petshop.data.model.product.Product;
+
+import java.sql.Blob;
 
 @Getter
 @Setter
@@ -28,7 +31,7 @@ public class ProductView {
 
     private Integer stock;
 
-    private byte[] photo;
+    private MultipartFile photo;
 
 
     public ProductView(Product product){
@@ -39,7 +42,6 @@ public class ProductView {
         this.forBreed = product.getForBreed();
         this.category = product.getCategory();
         this.stock = product.getStock();
-        this.photo = product.getPhoto();
     }
 
 }
