@@ -25,17 +25,23 @@ public class OrderView {
 
     private String username;
 
-    private List<OrderPartView> orderPartViews;
+    private List<OrderPartView> orderPartList;
+
+    private Float price;
 
     public OrderView(Order order){
         this.id = order.getId();
         this.date = order.getDate();
         this.status = order.getStatus();
         this.username = order.getUserName();
-        this.orderPartViews = order.getOrderParts()
+        this.orderPartList = order.getOrderParts()
                                    .stream()
                                    .map(OrderPartView::new)
                                    .collect(Collectors.toList());
+        this.price = order.getOrderParts()
+                          .stream()
+                          .map(elem -> elem.getProduct().getPrice() * elem.getQuantity())
+                          .reduce(0.0F, Float::sum);
     }
 
 }

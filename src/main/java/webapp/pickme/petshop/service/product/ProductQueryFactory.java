@@ -28,7 +28,7 @@ public class ProductQueryFactory {
             filterForContainsString(filter.getName(), "name", cb, root),
             filterForPrice(filter.getMaxPrice(), filter.getMinPrice(), cb, root),
             propertyEqualsValue("category", filter.getCategory(), cb, root),
-            propertyEqualsValue("breed",filter.getBreed(), cb, root)
+            propertyEqualsValue("forBreed",filter.getBreed(), cb, root)
         ).toArray(Predicate[]::new);
     }
 

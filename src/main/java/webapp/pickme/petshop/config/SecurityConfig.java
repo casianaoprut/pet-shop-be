@@ -17,14 +17,13 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import webapp.pickme.petshop.data.model.user.Role;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String ADMIN = Role.ADMIN.name();
-
-    private static final String USER = Role.USER.name();
 
     private static final String[] CSRF_IGNORE = {"/user/login", "user/create"};
 
@@ -54,18 +53,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private void authorizationConfig(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/product/all").permitAll()
+                .antMatchers("/product/photo/*").permitAll()
                 .antMatchers("/product/filter").permitAll()
+                .antMatchers("/user/create").permitAll()
+                .antMatchers("/user/login").authenticated()
+                .antMatchers("/product/get-by-id-list").hasAuthority(ADMIN)
                 .antMatchers("/product/delete/*").hasAuthority(ADMIN)
                 .antMatchers("/product/edit/*").hasAuthority(ADMIN)
                 .antMatchers("/product/add").hasAuthority(ADMIN)
-                .antMatchers("/order/add").hasAnyAuthority(ADMIN, USER)
                 .antMatchers("/order/all/*").hasAuthority(ADMIN)
                 .antMatchers("/order/change-status/*").hasAuthority(ADMIN)
                 .antMatchers("/order/delete/*").hasAuthority(ADMIN)
                 .antMatchers("/order/accept/*").hasAuthority(ADMIN)
-                .antMatchers("/user/*").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .logout().permitAll()
+                .logout()
+                .logoutUrl("/user/logout").permitAll()
                 .and()
                 .httpBasic();
     }
@@ -75,10 +78,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             CorsConfigurationSource cs = r -> {
                 var cc = new CorsConfiguration();
                 cc.addAllowedOrigin("http://localHost:4200");
-                cc.addAllowedMethod(HttpMethod.GET);
-                cc.addAllowedMethod(HttpMethod.POST);
-                cc.addAllowedMethod(HttpMethod.PUT);
-                cc.addAllowedMethod(HttpMethod.DELETE);
+                cc.setAllowedMethods(List.of("HEAD",
+                        "GET", "POST", "PUT", "DELETE", "PATCH"));
+                cc.setAllowCredentials(true);
+                cc.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
                 return cc;
             };
             c.configurationSource(cs);
