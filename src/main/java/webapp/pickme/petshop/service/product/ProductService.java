@@ -62,7 +62,10 @@ public class ProductService {
     }
 
     public ProductView edit(ProductView productView) throws IOException {
-        var product = mapProductViewToProduct(productView);
+        var product = new Product(productView);
+        if(productView.getPhoto() != null) {
+            product = mapProductViewToProduct(productView);
+        }
         return new ProductView(this.productRepository.save(product));
     }
 

@@ -42,7 +42,7 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/filter")
+    @PostMapping("/filter")
     public ResponseEntity<List<ProductView>> getFilteredProducts(@RequestBody Filter filter){
         return ResponseEntity.ok(this.productService.filter(filter));
     }
