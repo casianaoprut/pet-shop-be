@@ -4,10 +4,7 @@ import lombok.*;
 import webapp.pickme.petshop.api.view.ProductView;
 
 import javax.persistence.*;
-import javax.sql.rowset.serial.SerialBlob;
 import java.sql.Blob;
-import java.sql.SQLException;
-import java.util.Base64;
 
 @Getter
 @Setter
@@ -46,6 +43,8 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
 
+    private boolean onSale;
+
     @Lob
     @Basic(fetch = FetchType.LAZY)
     private Blob photo;
@@ -59,5 +58,6 @@ public class Product {
         this.forBreed = productView.getForBreed();
         this.category = productView.getCategory();
         this.stock = productView.getStock();
+        this.onSale = productView.isOnSale();
     }
 }

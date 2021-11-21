@@ -31,6 +31,8 @@ public class ProductView {
 
     private Integer stock;
 
+    private boolean onSale;
+
     private MultipartFile photo;
 
 
@@ -42,6 +44,7 @@ public class ProductView {
         this.forBreed = product.getForBreed();
         this.category = product.getCategory();
         this.stock = product.getStock();
+        this.onSale = product.isOnSale();
     }
 
 }
